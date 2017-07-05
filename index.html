@@ -74,42 +74,42 @@
                 <tr>
                     <td><label for="">HP</label></td>
                     <td><input type="number" class="form-control" placeholder="HP" min="0" max="99999" ng-model="mob.hp"></td>
-                    <td>{{sum('hp')}}</td>
+                    <td>{{sum('hp')}} ({{sumTotem('hp')}})</td>
                 </tr>
                 <tr>
                     <td><label for="">ATK</label></td>
                     <td><input type="number" class="form-control" placeholder="ATK" min="0" max="9999" ng-model="mob.atk"></td>
-                    <td>{{sum('atk')}}</td>
+                    <td>{{sum('atk')}} ({{sumTotem('atk')}})</td>
                 </tr>
                 <tr>
                     <td><label for="">DEF</label></td>
                     <td><input type="number" class="form-control" placeholder="DEF" min="0" max="999" ng-model="mob.def"></td>
-                    <td>{{sum('def')}}</td>
+                    <td>{{sum('def')}} ({{sumTotem('def')}})</td>
                 </tr>
                 <tr>
                     <td><label for="">SPD</label></td>
                     <td><input type="number" class="form-control" placeholder="SPD" min="0" max="999" ng-model="mob.spd"></td>
-                    <td>{{sum('spd')}}</td>
+                    <td>{{sum('spd')}} ({{sumTotem('spd')}})</td>
                 </tr>
                 <tr ng-class="{{total.crat < 70 ? warning : null}}">
                     <td><label for="">Crit Rate</label></td>
                     <td><input type="number" class="form-control" placeholder="Crit. Rate" min="0" max="999" ng-model="mob.crat"></td>
-                    <td>{{sum('crat')}}</td>
+                    <td>{{sum('crat')}} ({{sumTotem('crat')}})</td>
                 </tr>
                 <tr>
                     <td><label for="">Crit Dmg</label></td>
                     <td><input type="number" class="form-control" placeholder="Crit. Damage" min="0" max="999" ng-model="mob.cdmg"></td>
-                    <td>{{sum('cdmg')}}</td>
+                    <td>{{sum('cdmg')}} ({{sumTotem('cdmg')}})</td>
                 </tr>
                 <tr>
                     <td><label for="">RES</label></td>
                     <td><input type="number" class="form-control" placeholder="RES" min="0" max="999" ng-model="mob.res"></td>
-                    <td>{{sum('res')}}</td>
+                    <td>{{sum('res')}} ({{sumTotem('res')}})</td>
                 </tr>
                 <tr>
                     <td><label for="">ACC</label></td>
                     <td><input type="number" class="form-control" placeholder="ACC" min="0" max="999" ng-model="mob.acc"></td>
-                    <td>{{sum('acc')}}</td>
+                    <td>{{sum('acc')}} ({{sumTotem('acc')}})</td>
                 </tr>
             </table>
 
@@ -830,13 +830,6 @@ app.controller('mobController', ['$scope', function($scope){
             val += $scope.set[attr];
         }
 
-        var final = 0;
-        if ( ! isNaN($scope.totem[attr + '_'])) {
-            var totem_level = parseInt($scope.totem[attr + '_']);
-            var totem_value = totem_levels[attr + '_'][totem_level];
-            final = $scope.mob[attr] * totem_value;
-        }
-
         var sets = {};
         var sets_full = [];
 
@@ -859,15 +852,27 @@ app.controller('mobController', ['$scope', function($scope){
             }
         }
 
+        return Math.ceil(val) - $scope.mob[attr];
+    }
+
+    $scope.sumTotem = function (attr) {
+        var val = parseInt($scope.mob[attr]);
+        var totem = 0;
+        if ( ! isNaN($scope.totem[attr + '_'])) {
+            var totem_level = parseInt($scope.totem[attr + '_']);
+            var totem_value = totem_levels[attr + '_'][totem_level];
+            totem = $scope.mob[attr] * totem_value;
+        }
+
         if ($scope.element && attr == 'atk') {
             var element = $scope.element.value;
             var totem_level = parseInt($scope.totem[element]);
             if ( isNaN(totem_level)) totem_level = 0;
             var totem_value = totem_levels[element][totem_level];
-            final += $scope.mob.atk * totem_value;
+            totem += $scope.mob.atk * totem_value;
         }
         
-        return "+" + (Math.ceil(val) - $scope.mob[attr]) + " (" + Math.ceil(final) + ")";
+        return Math.ceil(totem);
     }
 
 
