@@ -82,7 +82,7 @@
                     <th>Base</th>
                     <th>Runes</th>
                     <th>Totems</th>
-                    <th>GvG</th>
+                    <th>GvG <input type="checkbox" ng-model="isGvG"></th>
                     <th>Total</th>
                 </tr>
                 <tr>
@@ -90,64 +90,64 @@
                     <td><input type="number" class="form-control" placeholder="HP" min="0" max="99999" ng-model="mob.hp"></td>
                     <td>{{sum('hp')}}</td>
                     <td>{{sumTotem('hp')}}</td>
-                    <td>{{sumGvG('hp')}}</td>
-                    <td>{{sum('hp') + sumTotem('hp') + mob.hp}}</td>
+                    <td>{{sumGvG('hp', true)}}</td>
+                    <td>{{sum('hp') + sumTotem('hp') + sumGvG('hp', isGvG) + mob.hp}}</td>
                 </tr>
                 <tr>
                     <td><label for="">ATK</label></td>
                     <td><input type="number" class="form-control" placeholder="ATK" min="0" max="9999" ng-model="mob.atk"></td>
                     <td>{{sum('atk')}}</td>
                     <td>{{sumTotem('atk')}}</td>
-                    <td>{{sumGvG('atk')}}</td>
-                    <td>{{sum('atk') + sumTotem('atk') + mob.atk}}</td>
+                    <td>{{sumGvG('atk', true)}}</td>
+                    <td>{{sum('atk') + sumTotem('atk') + sumGvG('atk', isGvG) + mob.atk}}</td>
                 </tr>
                 <tr>
                     <td><label for="">DEF</label></td>
                     <td><input type="number" class="form-control" placeholder="DEF" min="0" max="999" ng-model="mob.def"></td>
                     <td>{{sum('def')}}</td>
                     <td>{{sumTotem('def')}}</td>
-                    <td>{{sumGvG('def')}}</td>
-                    <td>{{sum('def') + sumTotem('def') + mob.def}}</td>
+                    <td>{{sumGvG('def', true)}}</td>
+                    <td>{{sum('def') + sumTotem('def') + sumGvG('def', isGvG) + mob.def}}</td>
                 </tr>
                 <tr>
                     <td><label for="">SPD</label></td>
                     <td><input type="number" class="form-control" placeholder="SPD" min="0" max="999" ng-model="mob.spd"></td>
                     <td>{{sum('spd')}}</td>
                     <td>{{sumTotem('spd')}}</td>
-                    <td>{{sumGvG('spd')}}</td>
-                    <td>{{sum('spd') + sumTotem('spd') + mob.spd}}</td>
+                    <td>{{sumGvG('spd', true)}}</td>
+                    <td>{{sum('spd') + sumTotem('spd') + sumGvG('spd', isGvG) + mob.spd}}</td>
                 </tr>
                 <tr ng-class="{{total.crat < 70 ? warning : null}}">
                     <td><label for="">Crit Rate</label></td>
                     <td><input type="number" class="form-control" placeholder="Crit. Rate" min="0" max="999" ng-model="mob.crat"></td>
                     <td>{{sum('crat')}}</td>
                     <td>{{sumTotem('crat')}}</td>
-                    <td>{{sumGvG('crat')}}</td>
-                    <td>{{sum('crat') + sumTotem('crat') + mob.crat}}</td>
+                    <td>{{sumGvG('crat', true)}}</td>
+                    <td>{{sum('crat') + sumTotem('crat') + sumGvG('crat', isGvG) + mob.crat}}</td>
                 </tr>
                 <tr>
                     <td><label for="">Crit Dmg</label></td>
                     <td><input type="number" class="form-control" placeholder="Crit. Damage" min="0" max="999" ng-model="mob.cdmg"></td>
                     <td>{{sum('cdmg')}}</td>
                     <td>{{sumTotem('cdmg')}}</td>
-                    <td>{{sumGvG('cdmg')}}</td>
-                    <td>{{sum('cdmg') + sumTotem('cdmg') + mob.cdmg}}</td>
+                    <td>{{sumGvG('cdmg', true)}}</td>
+                    <td>{{sum('cdmg') + sumTotem('cdmg') + sumGvG('cdmg', isGvG) + mob.cdmg}}</td>
                 </tr>
                 <tr>
                     <td><label for="">RES</label></td>
                     <td><input type="number" class="form-control" placeholder="RES" min="0" max="999" ng-model="mob.res"></td>
                     <td>{{sum('res')}}</td>
                     <td>{{sumTotem('res')}}</td>
-                    <td>{{sumGvG('res')}}</td>
-                    <td>{{sum('res') + sumTotem('res') + mob.res}}</td>
+                    <td>{{sumGvG('res', true)}}</td>
+                    <td>{{sum('res') + sumTotem('res') + sumGvG('res', isGvG) + mob.res}}</td>
                 </tr>
                 <tr>
                     <td><label for="">ACC</label></td>
                     <td><input type="number" class="form-control" placeholder="ACC" min="0" max="999" ng-model="mob.acc"></td>
                     <td>{{sum('acc')}}</td>
                     <td>{{sumTotem('acc')}}</td>
-                    <td>{{sumGvG('acc')}}</td>
-                    <td>{{sum('acc') + sumTotem('acc') + mob.acc}}</td>
+                    <td>{{sumGvG('acc', true)}}</td>
+                    <td>{{sum('acc') + sumTotem('acc') + sumGvG('acc', isGvG) + mob.acc}}</td>
                 </tr>
             </table>
 
@@ -231,6 +231,31 @@
                 <div class="col-xs-12 col-sm-4">
                     <label for="">Crit. Damage</label>
                     <input type="number" ng-model="totem.cdmg_" class="form-control" min="0" max="10">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>GvG</h3>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">DEF</label>
+                    <input type="number" ng-model="totemGvG.def_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK</label>
+                    <input type="number" ng-model="totemGvG.atk_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">HP</label>
+                    <input type="number" ng-model="totemGvG.hp_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">SPD</label>
+                    <input type="number" ng-model="totemGvG.spd_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">Crit. Damage</label>
+                    <input type="number" ng-model="totemGvG.cdmg_" class="form-control" min="0" max="10">
                 </div>
             </div>
         </div>
@@ -424,6 +449,7 @@ app.controller('mobController', ['$scope', function($scope){
     $scope.set.def_ = 0;
 
     $scope.totem = {};
+    $scope.totemGvG = {};
 
     $scope.elements = [
         {label: 'Water', value: 'water_'},
@@ -447,6 +473,13 @@ app.controller('mobController', ['$scope', function($scope){
         wind_:  [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21],
         light_: [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21],
         dark_:  [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21]
+    };
+
+    var totem_levels_gvg = {
+        atk_:  [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+        cdmg_: [0, .02, .05, .07, .09, .12, .15, .17, .20, .22, .25],
+        hp_:   [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+        def_:  [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
     };
 
     $scope.reset = function (index) {
@@ -520,24 +553,16 @@ app.controller('mobController', ['$scope', function($scope){
         return Math.ceil(totem);
     }
 
-    $scope.sumGvG = function (attr) {
-        return 0;
+    $scope.sumGvG = function (attr, isGvG) {
+        if ( ! isGvG) return 0;
         var val = parseInt($scope.mob[attr]);
         var totem = 0;
-        if ( ! isNaN($scope.totem[attr + '_'])) {
-            var totem_level = parseInt($scope.totem[attr + '_']);
+        if ( ! isNaN($scope.totemGvG[attr + '_'])) {
+            var totem_level = parseInt($scope.totemGvG[attr + '_']);
             var totem_value = totem_levels[attr + '_'][totem_level];
             totem = $scope.mob[attr] * totem_value;
         }
 
-        if ($scope.element && attr == 'atk') {
-            var element = $scope.element.value;
-            var totem_level = parseInt($scope.totem[element]);
-            if ( isNaN(totem_level)) totem_level = 0;
-            var totem_value = totem_levels[element][totem_level];
-            totem += $scope.mob.atk * totem_value;
-        }
-        
         return Math.ceil(totem);
     }
 
