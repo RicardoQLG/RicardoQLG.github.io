@@ -159,7 +159,7 @@
                         <select name="set" id="" class="form-control" ng-model="rune_set[i]" ng-options="item as item.label for item in rune_sets track by item.id"></select>
                         
                         <div class="row" ng-repeat="(j, rune_stats) in stats">
-                            <div class="col-xs-12 col-sm-3">Main Status</div>
+                            <div class="col-xs-12 col-sm-3">{{rune_stats}}</div>
                             
                             <div class="col-xs-12 col-sm-4">
                                 <select name="" id="" ng-change="updateValue(attr[i][j], '{{attr[i][j].value}}', j)" class="form-control" ng-model="attr[i][j]" ng-options="item as item.label for item in attrs track by item.value"></select>
@@ -328,18 +328,19 @@ app.controller('mobController', ['$scope', function($scope){
             }
         }
     }
-    $scope.attr[0] = [{
+
+    $scope.attr[0][0] = {
         label: 'ATK Flat',
         value: 'atk'
-    }];
-    $scope.attr[2] = [{
+    };
+    $scope.attr[2][0] = {
         label: 'DEF Flat',
         value: 'def'
-    }];
-    $scope.attr[4] = [{
+    };
+    $scope.attr[4][0] = {
         label: 'HP Flat',
         value: 'hp'
-    }];
+    };
 
     $scope.attrs = [{
         label: '',
@@ -444,15 +445,17 @@ app.controller('mobController', ['$scope', function($scope){
         if (isNaN(val)) val = 0;
 
         for (var i in $scope.runes) {
-            if ( ! isNaN($scope.runes[i][attr])) {
+            if ( ! isNaN($scope.runes[i][attr]) && $scope.runes[i][attr]) {
+                console.log(isNaN($scope.runes[i][attr]), $scope.runes[i][attr]);
                 val += parseInt($scope.runes[i][attr]);
             }
 
-            if ( ! isNaN($scope.runes[i][attr + '_'])) {
+            if ( ! isNaN($scope.runes[i][attr + '_']) && $scope.runes[i][attr + '_']) {
                 val += $scope.mob[attr] * (parseInt($scope.runes[i][attr + '_']) / 100);
             }
 
         }
+
 
         if ( ! isNaN($scope.set[attr])) {
             val += $scope.set[attr];
