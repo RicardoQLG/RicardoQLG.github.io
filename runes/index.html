@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="SummonersWar">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>SW Master</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+.margin-top {
+	margin-top: 80px;
+}
+
+.column-small {
+	width: 70px;
+}
+.input-column {
+    /*width: 150px;*/
+}
+.runes-column,
+.totems-column,
+.total-column {
+    width: 10px;
+}
+</style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">SW Master</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse pull-right">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="mailto:rq.godoy@gmail.com">Contato</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container" ng-controller="mobController">
+
+      <div class="row" style="margin-top: 80px;">
+        <div class="col-xs-12 col-sm-6">
+            <h2>Status base do mob</h2>
+
+            <table class="table">
+                <tr>
+                    <th class="label-column">Mob</th>
+                    <td class="input-column">
+                        <select name="" id="" class="form-control" ng-model="element" ng-options="item as item.label for item in elements track by item.value"></select>
+                    </td>
+                    <th class="runes-column">&nbsp;</th>
+                    <th class="totems-column">&nbsp;</th>
+                    <th class="gvg-column">&nbsp;</th>
+                    <th class="total-column">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th>Attr</th>
+                    <th>Base</th>
+                    <th>Runes</th>
+                    <th>Totems</th>
+                    <th>GvG <input type="checkbox" ng-model="isGvG"></th>
+                    <th>Total</th>
+                </tr>
+                <tr>
+                    <td><label for="">HP</label></td>
+                    <td><input type="number" class="form-control" placeholder="HP" min="0" max="99999" ng-model="mob.hp"></td>
+                    <td>{{sum('hp')}}</td>
+                    <td>{{sumTotem('hp')}}</td>
+                    <td>{{sumGvG('hp', true)}}</td>
+                    <td>{{sum('hp') + sumTotem('hp') + sumGvG('hp', isGvG) + mob.hp}}</td>
+                </tr>
+                <tr>
+                    <td><label for="">ATK</label></td>
+                    <td><input type="number" class="form-control" placeholder="ATK" min="0" max="9999" ng-model="mob.atk"></td>
+                    <td>{{sum('atk')}}</td>
+                    <td>{{sumTotem('atk')}}</td>
+                    <td>{{sumGvG('atk', true)}}</td>
+                    <td>{{sum('atk') + sumTotem('atk') + sumGvG('atk', isGvG) + mob.atk}}</td>
+                </tr>
+                <tr>
+                    <td><label for="">DEF</label></td>
+                    <td><input type="number" class="form-control" placeholder="DEF" min="0" max="999" ng-model="mob.def"></td>
+                    <td>{{sum('def')}}</td>
+                    <td>{{sumTotem('def')}}</td>
+                    <td>{{sumGvG('def', true)}}</td>
+                    <td>{{sum('def') + sumTotem('def') + sumGvG('def', isGvG) + mob.def}}</td>
+                </tr>
+                <tr>
+                    <td><label for="">SPD</label></td>
+                    <td><input type="number" class="form-control" placeholder="SPD" min="0" max="999" ng-model="mob.spd"></td>
+                    <td>{{sum('spd')}}</td>
+                    <td>{{sumTotem('spd')}}</td>
+                    <td>{{sumGvG('spd', true)}}</td>
+                    <td>{{sum('spd') + sumTotem('spd') + sumGvG('spd', isGvG) + mob.spd}}</td>
+                </tr>
+                <tr ng-class="{{total.crat < 70 ? warning : null}}">
+                    <td><label for="">Crit Rate</label></td>
+                    <td><input type="number" class="form-control" placeholder="Crit. Rate" min="0" max="999" ng-model="mob.crat"></td>
+                    <td>{{sum('crat')}}</td>
+                    <td>{{sumTotem('crat')}}</td>
+                    <td>{{sumGvG('crat', true)}}</td>
+                    <td>{{sum('crat') + sumTotem('crat') + sumGvG('crat', isGvG) + mob.crat}}</td>
+                </tr>
+                <tr>
+                    <td><label for="">Crit Dmg</label></td>
+                    <td><input type="number" class="form-control" placeholder="Crit. Damage" min="0" max="999" ng-model="mob.cdmg"></td>
+                    <td>{{sum('cdmg')}}</td>
+                    <td>{{sumTotem('cdmg')}}</td>
+                    <td>{{sumGvG('cdmg', true)}}</td>
+                    <td>{{sum('cdmg') + sumTotem('cdmg') + sumGvG('cdmg', isGvG) + mob.cdmg}}</td>
+                </tr>
+                <tr>
+                    <td><label for="">RES</label></td>
+                    <td><input type="number" class="form-control" placeholder="RES" min="0" max="999" ng-model="mob.res"></td>
+                    <td>{{sum('res')}}</td>
+                    <td>{{sumTotem('res')}}</td>
+                    <td>{{sumGvG('res', true)}}</td>
+                    <td>{{sum('res') + sumTotem('res') + sumGvG('res', isGvG) + mob.res}}</td>
+                </tr>
+                <tr>
+                    <td><label for="">ACC</label></td>
+                    <td><input type="number" class="form-control" placeholder="ACC" min="0" max="999" ng-model="mob.acc"></td>
+                    <td>{{sum('acc')}}</td>
+                    <td>{{sumTotem('acc')}}</td>
+                    <td>{{sumGvG('acc', true)}}</td>
+                    <td>{{sum('acc') + sumTotem('acc') + sumGvG('acc', isGvG) + mob.acc}}</td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <h2>Runas</h2>
+
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" ng-class="i == 0 ? 'active' : ''" ng-repeat="(i, rune) in runes">
+                        <a href="#runa-{{i}}" aria-controls="runa-{{i}}" role="tab" data-toggle="tab">
+                            Runa {{i + 1}}
+                        </a>
+                    </li>
+                </ul>
+            
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane" ng-class="i == 0 ? 'active' : ''" id="runa-{{i}}" ng-repeat="(i, rune) in runes">
+                        <label for="">Set</label>
+                        <select name="set" id="" class="form-control" ng-model="rune_set[i]" ng-options="item as item.label for item in rune_sets track by item.id"></select>
+                        
+                        <div class="row" ng-repeat="(j, rune_stats) in stats">
+                            <div class="col-xs-12 col-sm-3">{{rune_stats}}</div>
+                            
+                            <div class="col-xs-12 col-sm-4">
+                                <select name="" id="" ng-change="updateValue(attr[i][j], '{{attr[i][j].value}}', i)" class="form-control" ng-model="attr[i][j]" ng-options="item as item.label for item in attrs track by item.value"></select>
+                            </div>
+                            <div class="col-xs-12 col-sm-5">
+                                <input type="text" ng-model="runes[i][attr[i][j].value]" class="form-control">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <h2>Totens</h2>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK (Water)</label>
+                    <input type="number" ng-model="totem.water_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK (Fire)</label>
+                    <input type="number" ng-model="totem.fire_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK (Wind)</label>
+                    <input type="number" ng-model="totem.wind_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK (Light)</label>
+                    <input type="number" ng-model="totem.light_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK (Dark)</label>
+                    <input type="number" ng-model="totem.dark_" class="form-control" min="0" max="10">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">DEF</label>
+                    <input type="number" ng-model="totem.def_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK</label>
+                    <input type="number" ng-model="totem.atk_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">HP</label>
+                    <input type="number" ng-model="totem.hp_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">SPD</label>
+                    <input type="number" ng-model="totem.spd_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">Crit. Damage</label>
+                    <input type="number" ng-model="totem.cdmg_" class="form-control" min="0" max="10">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>GvG</h3>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">DEF</label>
+                    <input type="number" ng-model="totemGvG.def_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">ATK</label>
+                    <input type="number" ng-model="totemGvG.atk_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">HP</label>
+                    <input type="number" ng-model="totemGvG.hp_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">SPD</label>
+                    <input type="number" ng-model="totemGvG.spd_" class="form-control" min="0" max="10">
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <label for="">Crit. Damage</label>
+                    <input type="number" ng-model="totemGvG.cdmg_" class="form-control" min="0" max="10">
+                </div>
+            </div>
+        </div>
+      </div>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script>
+/**
+* SummonersWar Module
+*
+* Description
+*/
+var app = angular.module('SummonersWar', []);
+
+app.controller('mobController', ['$scope', function($scope){
+    $scope.rune_set = [];
+    $scope.rune_sets = [{
+      id: 1,
+      label: 'Energy',
+      size: 2,
+      hp_: 15
+    }, {
+      id: 2,
+      label: 'Fatal',
+      size: 4,
+      atk_: 35
+    }, {
+      id: 3,
+      label: 'Blade',
+      size: 2,
+      crat: 12
+    }, {
+      id: 4,
+      label: 'Swift',
+      size: 4,
+      spd_: 25
+    }, {
+      id: 5,
+      label: 'Focus',
+      size: 2,
+      acc: 20
+    }, {
+      id: 6,
+      label: 'Guard',
+      size: 2,
+      def_: 15
+    }, {
+      id: 7,
+      label: 'Endure',
+      size: 2,
+      res: 20
+    }, {
+      id: 8,
+      label: 'Shield',
+      size: 2
+    }, {
+      id: 9,
+      label: 'Revenge',
+      size: 2
+    }, {
+      id: 10,
+      label: 'Will',
+      size: 2
+    }, {
+      id: 11,
+      label: 'Nemesis',
+      size: 2
+    }, {
+      id: 12,
+      label: 'Vampire',
+      size: 4
+    }, {
+      id: 13,
+      label: 'Destroy',
+      size: 2
+    }, {
+      id: 14,
+      label: 'Despair',
+      size: 4
+    }, {
+      id: 15,
+      label: 'Violent',
+      size: 4
+    }, {
+      id: 16,
+      label: 'Rage',
+      size: 4,
+      cdmg: 40
+    }];
+
+    $scope.attr = [];
+    for (var i = 0; i < 6; i++) {
+        $scope.attr[i] = [];
+        for (var j = 0; j < 6; j++) {
+            $scope.attr[i][j] = {
+                label: '',
+                value: ''
+            }
+        }
+    }
+
+    $scope.attr[0][0] = {
+        label: 'ATK Flat',
+        value: 'atk'
+    };
+    $scope.attr[2][0] = {
+        label: 'DEF Flat',
+        value: 'def'
+    };
+    $scope.attr[4][0] = {
+        label: 'HP Flat',
+        value: 'hp'
+    };
+
+    $scope.attrs = [{
+        label: '',
+        value: ''
+    },{
+        label: 'HP%',
+        value: 'hp_'
+    },{
+        label: 'HP Flat',
+        value: 'hp'
+    },{
+        label: 'ATK%',
+        value: 'atk_'
+    },{
+        label: 'ATK Flat',
+        value: 'atk'
+    },{
+        label: 'DEF%',
+        value: 'def_'
+    },{
+        label: 'DEF Flat',
+        value: 'def'
+    },{
+        label: 'SPD',
+        value: 'spd'
+    },{
+        label: 'C.Rate',
+        value: 'crat'
+    },{
+        label: 'C.Damage',
+        value: 'cdmg'
+    },{
+        label: 'Res',
+        value: 'res'
+    },{
+        label: 'Acc',
+        value: 'acc'
+    }];
+
+    $scope.stats = ['Main Status', 'Innate', 'Sub 1', 'Sub 2', 'Sub 3', 'Sub 4'];
+
+    $scope.mob = {};
+    $scope.mob.res  = null;
+    $scope.mob.acc  = null;
+    $scope.mob.hp   = null;
+    $scope.mob.atk  = null;
+    $scope.mob.def  = null;
+    $scope.mob.spd  = null;
+    $scope.mob.crat = null;
+    $scope.mob.cdmg = null;
+
+    $scope.runes = []
+    $scope.runes[0] = {};
+    $scope.runes[1] = {};
+    $scope.runes[2] = {};
+    $scope.runes[3] = {};
+    $scope.runes[4] = {};
+    $scope.runes[5] = {};
+
+    $scope.set = {};
+    $scope.set.res  = 0;
+    $scope.set.acc  = 0;
+    $scope.set.spd_ = 0;
+    $scope.set.crat = 0;
+    $scope.set.cdmg = 0;
+    $scope.set.hp_  = 0;
+    $scope.set.atk_ = 0;
+    $scope.set.def_ = 0;
+
+    $scope.totem = {};
+    $scope.totemGvG = {};
+
+    $scope.elements = [
+        {label: 'Water', value: 'water_'},
+        {label: 'Fire',  value: 'fire_'},
+        {label: 'Wind',  value: 'wind_'},
+        {label: 'Light', value: 'light_'},
+        {label: 'Dark',  value: 'dark_'},
+    ];
+
+    var totem_levels = {
+        spd_:  [0, .02, .03, .05, .06, .08, .09, .11, .12, .14, .15],
+
+        def_:  [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+        atk_:  [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+        hp_:   [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+
+        cdmg_: [0, .02, .05, .07, .1, .12, .15, .17, .20, .22, .25],
+        
+        water_: [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21],
+        fire_:  [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21],
+        wind_:  [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21],
+        light_: [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21],
+        dark_:  [0, .03, .05, .07, .09, .11, .13, .15, .17, .19, .21]
+    };
+
+    var totem_levels_gvg = {
+        atk_:  [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+        cdmg_: [0, .02, .05, .07, .09, .12, .15, .17, .20, .22, .25],
+        hp_:   [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+        def_:  [0, .02, .04, .06, .08, .1, .12, .14, .16, .18, .2],
+    };
+
+    $scope.reset = function (index) {
+        $scope.runes[index] = {};
+    }
+
+    $scope.sum = function (attr) {
+        var val = parseInt($scope.mob[attr]);
+        if (isNaN(val)) val = 0;
+
+        for (var i in $scope.runes) {
+            if ( ! isNaN($scope.runes[i][attr]) && $scope.runes[i][attr]) {
+                console.log(isNaN($scope.runes[i][attr]), $scope.runes[i][attr]);
+                val += parseInt($scope.runes[i][attr]);
+            }
+
+            if ( ! isNaN($scope.runes[i][attr + '_']) && $scope.runes[i][attr + '_']) {
+                val += $scope.mob[attr] * (parseInt($scope.runes[i][attr + '_']) / 100);
+            }
+
+        }
+
+
+        if ( ! isNaN($scope.set[attr])) {
+            val += $scope.set[attr];
+        }
+
+        var sets = {};
+        var sets_full = [];
+
+        for (var i in $scope.rune_set) {
+            if ( ! sets[$scope.rune_set[i].id]) {
+                sets[$scope.rune_set[i].id] = 0;
+            }
+            
+            sets[$scope.rune_set[i].id]++;
+
+            if (sets[$scope.rune_set[i].id] % $scope.rune_set[i].size == 0) {
+                sets_full.push($scope.rune_set[i]);
+            }
+
+        }
+
+        for (var i in sets_full) {
+            if ( ! isNaN(sets_full[i][attr + '_'])) {
+                val += $scope.mob[attr] * (parseInt(sets_full[i][attr + '_']) / 100);
+            }
+        }
+
+        return Math.ceil(val) - $scope.mob[attr];
+    }
+
+    $scope.sumTotem = function (attr) {
+        var val = parseInt($scope.mob[attr]);
+        var totem = 0;
+        if ( ! isNaN($scope.totem[attr + '_'])) {
+            var totem_level = parseInt($scope.totem[attr + '_']);
+            var totem_value = totem_levels[attr + '_'][totem_level];
+            totem = $scope.mob[attr] * totem_value;
+        }
+
+        if ($scope.element && attr == 'atk') {
+            var element = $scope.element.value;
+            var totem_level = parseInt($scope.totem[element]);
+            console.log($scope.totem, element);
+            if ( isNaN(totem_level)) totem_level = 0;
+            var totem_value = totem_levels[element][totem_level];
+            totem += $scope.mob.atk * totem_value;
+        }
+        
+        return Math.ceil(totem);
+    }
+
+    $scope.sumGvG = function (attr, isGvG) {
+        if ( ! isGvG) return 0;
+        var val = parseInt($scope.mob[attr]);
+        var totem = 0;
+        if ( ! isNaN($scope.totemGvG[attr + '_'])) {
+            var totem_level = parseInt($scope.totemGvG[attr + '_']);
+            var totem_value = totem_levels[attr + '_'][totem_level];
+            totem = $scope.mob[attr] * totem_value;
+        }
+
+        return Math.ceil(totem);
+    }
+
+
+    $scope.updateValue = function(a, b, index) {
+        if(b) {
+            $scope.runes[index][b] = 0;
+        }
+    }
+}]);
+</script>
+  </body>
+</html>
